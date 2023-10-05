@@ -1,6 +1,7 @@
 package com.jihwan.security.auth.config;
 
 import com.jihwan.security.auth.filter.HeaderFilter;
+import com.jihwan.security.auth.interceptor.JwtTokenInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

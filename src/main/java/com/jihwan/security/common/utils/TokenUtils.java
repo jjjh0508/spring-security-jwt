@@ -1,13 +1,17 @@
 package com.jihwan.security.common.utils;
 
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import com.jihwan.security.user.entity.User;
+import io.jsonwebtoken.*;
+import org.hibernate.type.DateType;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 토큰을 관리하기 위한 utils 모음 클래스
@@ -19,6 +23,8 @@ public class TokenUtils {
 
     private static  String jwtSecretkey;
     public  static  Long tokenValidateTime;
+
+
 
     @Value("${jwt.key}")
     public  void setJwtSecretkey(String jwtSecretkey) {
@@ -81,6 +87,70 @@ public class TokenUtils {
     public static Claims getClaimsFromToken(String token){
         return Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecretkey))
                 .parseClaimsJws(token).getBody();
+    }
+
+
+    /**
+     * token을 생성하는 메서드
+     * @param user - userEntity
+     * @return   String - token
+     * */
+    public static String generateJwtToken(User user) {
+        Date expireTime = new Date(System.currentTimeMillis()+tokenValidateTime);
+        JwtBuilder builder = Jwts.builder()
+                .setHeader(createHeader())     // 헤더 설정
+                .setClaims(createClaims(user)) // 크레임 추가
+                .setSubject("ohgiraffers token : "+user.getUserNo())  // 토큰의 제목
+                .signWith(SignatureAlgorithm.HS256,createSignature()) // 토큰 생성
+                .setExpiration(expireTime); // 토큰 유효시간
+
+        return builder.compact();
+    }
+
+
+    /**
+     * token의 header를 설정하는 메서드
+     * @return Map<String, Object > - header의 설정 정보
+     *
+     * */
+    private static Map<String,Object> createHeader(){
+        Map<String ,Object> header = new HashMap<>();
+        header.put("type","jwt");
+        header.put("alg","HS256");
+        header.put("date",System.currentTimeMillis());
+
+        return header;
+
+    }
+
+    /**
+     * 사용자 정보를 기반으로 클레임을 성성해주는 메서드
+     *
+     * @param user - 사용자 정보
+     * @return Map<String , object> claims 정보
+     * */
+
+    private static Map<String , Object> createClaims(User user){
+        Map<String , Object> claims = new HashMap<>(); // 사용자의 정보를 담는 부분 (페이로드)
+
+        claims.put("userName", user.getUserName());
+        claims.put("Role",user.getRole());
+        claims.put("userEmail",user.getUserEmail());
+
+        return claims;
+
+    }
+
+    /**
+     * JWT 서명을 발급해주는 메서드이다.
+     *
+     * @return key
+     *
+     * */
+
+    private static Key createSignature(){
+        byte[] secretBytes = DatatypeConverter.parseBase64Binary(jwtSecretkey);
+        return new SecretKeySpec(secretBytes, SignatureAlgorithm.HS256.getJcaName());
     }
 }
 

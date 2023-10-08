@@ -3,8 +3,9 @@ package com.jihwan.security.common.utils;
 
 import com.jihwan.security.user.entity.User;
 import io.jsonwebtoken.*;
-import org.hibernate.type.DateType;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
@@ -19,6 +20,8 @@ import java.util.Map;
  * jwt lib 버전은 io.jsonwebtoken:jjwt:0.9.1
  *
  * */
+
+@Component
 public class TokenUtils {
 
     private static  String jwtSecretkey;
@@ -26,14 +29,14 @@ public class TokenUtils {
 
 
 
-    @Value("${jwt.key}")
+    @Value(value = "${jwt.key}")
     public  void setJwtSecretkey(String jwtSecretkey) {
         TokenUtils.jwtSecretkey = jwtSecretkey;
     }
 
 
-    @Value("${jwt.time}")
-    public  void setTokenValidateTime(Long tokenValidateTime) {
+    @Value(value ="${jwt.time}")
+    public   void setTokenValidateTime(Long tokenValidateTime) {
         TokenUtils.tokenValidateTime = tokenValidateTime;
     }
 

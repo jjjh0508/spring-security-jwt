@@ -1,5 +1,6 @@
 package com.jihwan.security.auth.interceptor;
 
+import com.jihwan.security.common.Authconstants;
 import com.jihwan.security.common.utils.TokenUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -11,7 +12,7 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String header = request.getHeader("Authorization");
+        String header = request.getHeader(Authconstants.AUTH_HEADER);
         String token = TokenUtils.splitHeader(header);
 
 

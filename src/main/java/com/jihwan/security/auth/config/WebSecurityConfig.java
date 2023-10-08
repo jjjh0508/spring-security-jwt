@@ -5,6 +5,7 @@ import com.jihwan.security.auth.filter.CustomAuthenticationFilter;
 
 import com.jihwan.security.auth.filter.JwtAuthorizationFilter;
 import com.jihwan.security.auth.handler.CustomAuthFailureHandler;
+
 import com.jihwan.security.auth.handler.CustomAuthLoginSuccessHandler;
 import com.jihwan.security.auth.handler.CustomAuthenticationProvider;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -93,7 +94,7 @@ public class WebSecurityConfig {
      */
     @Bean
     public CustomAuthenticationProvider customAuthenticationProvider() {
-        return customAuthenticationProvider();
+        return new CustomAuthenticationProvider();
     }
 
 
@@ -114,12 +115,12 @@ public class WebSecurityConfig {
      * @return CustomAuthenticationFilter
      */
 
+
     @Bean
     public CustomAuthenticationFilter customAuthenticationFilter() {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager());
-
-        customAuthenticationFilter.setFilterProcessesUrl("/login");
-        customAuthenticationFilter.setAuthenticationSuccessHandler(customAuthLoginSuccessHandler());
+        customAuthenticationFilter.setFilterProcessesUrl("/login");  //로그인 요청
+        customAuthenticationFilter.setAuthenticationSuccessHandler(customAuthSuccessHandler());
         customAuthenticationFilter.setAuthenticationFailureHandler(customAuthFailureHandler());
         customAuthenticationFilter.afterPropertiesSet();
 
@@ -135,7 +136,7 @@ public class WebSecurityConfig {
      */
 
     @Bean
-    public CustomAuthLoginSuccessHandler customAuthLoginSuccessHandler() {
+    public CustomAuthLoginSuccessHandler customAuthSuccessHandler() {
         return new CustomAuthLoginSuccessHandler();
     }
 
@@ -145,6 +146,7 @@ public class WebSecurityConfig {
      *
      * @return CustomAuthFailureHandler
      * */
+
 
     @Bean
     public CustomAuthFailureHandler customAuthFailureHandler(){

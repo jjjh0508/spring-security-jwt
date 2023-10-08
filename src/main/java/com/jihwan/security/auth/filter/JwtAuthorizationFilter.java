@@ -24,7 +24,7 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+
 
 public class JwtAuthorizationFilter  extends BasicAuthenticationFilter {
 
@@ -47,16 +47,18 @@ public class JwtAuthorizationFilter  extends BasicAuthenticationFilter {
             }
 
             String header = request.getHeader(Authconstants.AUTH_HEADER);
+
             if(header != null && !header.equalsIgnoreCase("")){
                 String token = TokenUtils.splitHeader(header);
                 if(TokenUtils.isValidToken(token)){
                     Claims claims =  TokenUtils.getClaimsFromToken(token);
 
+
                     DetailsUser authentication = new DetailsUser();
                     //매 요청시 DB IO 발생하게됨
                     User user = new User();
                     user.setUserName(claims.get("userName").toString());
-                    user.setUserEmail(claims.get("userEmail").toString());
+//
                     user.setRole(OhgiraffersRole.valueOf(claims.get("Role").toString()));
                     authentication.setUser(user);
 

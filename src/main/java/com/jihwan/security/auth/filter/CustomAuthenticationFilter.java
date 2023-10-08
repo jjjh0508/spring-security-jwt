@@ -27,8 +27,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+
         UsernamePasswordAuthenticationToken authenticationToken;
         try {
+
             authenticationToken = getAuthRequest(request);
             setDetails(request,authenticationToken);
         } catch (IOException e) {
@@ -61,6 +63,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,true);
 
         LoginDto user  = objectMapper.readValue(request.getInputStream(), LoginDto.class);
+
+
 
         return new UsernamePasswordAuthenticationToken(user.getId(),user.getPass());
 
